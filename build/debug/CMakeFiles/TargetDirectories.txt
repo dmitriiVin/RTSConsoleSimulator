@@ -1,0 +1,3 @@
+/Users/dmitriivinogradov/RTSConsoleSimulator/build/debug/CMakeFiles/RTSConsoleSimulator.dir
+/Users/dmitriivinogradov/RTSConsoleSimulator/build/debug/CMakeFiles/edit_cache.dir
+/Users/dmitriivinogradov/RTSConsoleSimulator/build/debug/CMakeFiles/rebuild_cache.dir
