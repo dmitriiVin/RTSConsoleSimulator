@@ -1,1 +1,8 @@
+# Build
 build/
+
+# Clangd
+.cache/
+
+# Compilation database
+compile_commands.json

@@ -1,6 +1,0 @@
-# ninja log v7
-4	436	1780993690840841829	CMakeFiles/RTSConsoleSimulator.dir/src/Unit.cpp.o	9a6099953bcb87ad
-6	313	1781000282391148936	CMakeFiles/RTSConsoleSimulator.dir/src/main.cpp.o	6198cbc9be24ff7f
-313	354	1781000282698229458	RTSConsoleSimulator	9b0a90e755e4b5fe
-4	338	1781000454686585507	CMakeFiles/RTSConsoleSimulator.dir/src/main.cpp.o	6198cbc9be24ff7f
-338	379	1781000455020368744	RTSConsoleSimulator	9b0a90e755e4b5fe
