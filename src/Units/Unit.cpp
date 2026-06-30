@@ -14,6 +14,9 @@ Unit CreateUnit() {
     std::cout << "Введите урон юнита: ";
     std::cin >> unit.damage;
 
+    std::cout << "Введите букву юнита: ";
+    std::cin >> unit.designation;
+
     std::cout << "Введите X: ";
     std::cin >> unit.x;
     unit.x--;
@@ -30,6 +33,7 @@ void PrintUnit(const Unit &unit) {
     std::cout << "\nИмя: " << unit.name << "\n";
     std::cout << "Здоровье: " << unit.hp << "\n";
     std::cout << "Урон: " << unit.damage << "\n";
+    std::cout << "Обозначение: " << unit.designation << "\n";
     std::cout << "Позиция X: " << unit.x + 1 << "\n";
     std::cout << "Позиция Y: " << unit.y + 1 << '\n';
 }

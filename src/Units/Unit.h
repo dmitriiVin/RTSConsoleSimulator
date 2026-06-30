@@ -7,6 +7,7 @@ struct Unit {
     std::string name;
     int hp;
     int damage;
+    std::string designation;
 
     int x;
     int y;
