@@ -1,8 +1,5 @@
-#include "Config.h"
+#include "Camera.h"
 #include "SDLRender.h"
-#include "WorldMath.h"
-#include <SDL3/SDL_render.h>
-#include <stdio.h>
 
 void Render(const Map &map, const std::vector<Unit> &units) {
     if (!SDL_Init(SDL_INIT_VIDEO)) {
@@ -31,6 +28,8 @@ void Render(const Map &map, const std::vector<Unit> &units) {
 
     bool running = true;
 
+    Camera camera{0.0f, 0.0f};
+
     while (running) {
         SDL_Event event;
 
@@ -41,7 +40,7 @@ void Render(const Map &map, const std::vector<Unit> &units) {
         }
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
         SDL_RenderClear(renderer);
-        RenderMap(renderer, map);
+        RenderMap(renderer, map, camera);
         SDL_RenderPresent(renderer);
     }
 
@@ -50,13 +49,13 @@ void Render(const Map &map, const std::vector<Unit> &units) {
     SDL_Quit();
 }
 
-void RenderMap(SDL_Renderer *renderer, const Map &map) {
+void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera) {
     int row, column;
 
     for (row = 0; row < map.map_height; row++) {
         for (column = 0; column < map.map_width; column++) {
 
-            ScreenPoint pos = WorldToScreen(column, row);
+            ScreenPoint pos = WorldToScreen(column, row, camera);
 
             SDL_FRect tileRect = {pos.x, pos.y, TILE_SIZE, TILE_SIZE};
             SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255);

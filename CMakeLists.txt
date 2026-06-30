@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(RTSConsoleSimulator)
+project(RTSEngine)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,6 +12,7 @@ add_executable(${PROJECT_NAME}
     src/Map/MapGenerator.cpp
     src/Render/SDLRender.cpp
     src/Math/WorldMath.cpp
+    src/Camera/Camera.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -22,6 +23,7 @@ target_include_directories(${PROJECT_NAME}
         src/Map
         src/Render
         src/Math
+        src/Camera
 )
 
 find_package(SDL3 CONFIG REQUIRED)
