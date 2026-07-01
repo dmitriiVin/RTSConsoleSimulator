@@ -1,4 +1,3 @@
-#include "Camera.h"
 #include "SDLRender.h"
 
 void Render(const Map &map, const std::vector<Unit> &units) {
@@ -39,6 +38,9 @@ void Render(const Map &map, const std::vector<Unit> &units) {
             }
         }
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+
+        UpdateCamera(camera);
+
         SDL_RenderClear(renderer);
         RenderMap(renderer, map, camera);
         SDL_RenderPresent(renderer);
@@ -64,14 +66,11 @@ void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera) {
 
             if (tile == TILE_GRASS) {
                 SDL_SetRenderDrawColor(renderer, 117, 233, 128, 255);
-            }
-            else if (tile == TILE_TREE) {
+            } else if (tile == TILE_TREE) {
                 SDL_SetRenderDrawColor(renderer, 61, 186, 7, 255);
-            }
-            else if (tile == TILE_WATER) {
+            } else if (tile == TILE_WATER) {
                 SDL_SetRenderDrawColor(renderer, 113, 244, 249, 255);
-            }
-            else if (tile == TILE_MOUNTAIN) {
+            } else if (tile == TILE_MOUNTAIN) {
                 SDL_SetRenderDrawColor(renderer, 155, 150, 150, 255);
             }
 

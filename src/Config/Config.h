@@ -16,3 +16,4 @@ enum MapSize {
 
 constexpr int TREE_EDGE_SIZE = 2;
 constexpr int TREE_EDGE_MISSING_PROBABILITY = 25;
+constexpr float CAMERA_SPEED = 1.0f;
