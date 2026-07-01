@@ -1,3 +1,4 @@
+#include "Camera.h"
 #include "SDLRender.h"
 
 void Render(const Map &map, const std::vector<Unit> &units) {
@@ -39,7 +40,8 @@ void Render(const Map &map, const std::vector<Unit> &units) {
         }
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 
-        UpdateCamera(camera);
+        UpdateCamera(camera, window);
+        ClampCamera(camera, map);
 
         SDL_RenderClear(renderer);
         RenderMap(renderer, map, camera);
@@ -52,10 +54,20 @@ void Render(const Map &map, const std::vector<Unit> &units) {
 }
 
 void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera) {
+
+    int firstColumn = std::max(0, static_cast<int>(camera.x / TILE_SIZE));
+    int firstRow = std::max(0, static_cast<int>(camera.y / TILE_SIZE));
+
+    int visibleColumns = camera.viewportWidth / TILE_SIZE + 2;
+    int visibleRows = camera.viewportHeight / TILE_SIZE + 2;
+
+    int lastColumn = std::min(map.map_width, firstColumn + visibleColumns);
+    int lastRow = std::min(map.map_height, firstRow + visibleRows);
+
     int row, column;
 
-    for (row = 0; row < map.map_height; row++) {
-        for (column = 0; column < map.map_width; column++) {
+    for (row = firstRow; row < lastRow; row++) {
+        for (column = firstColumn; column < lastColumn; column++) {
 
             ScreenPoint pos = WorldToScreen(column, row, camera);
 
@@ -76,8 +88,10 @@ void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera) {
 
             SDL_RenderFillRect(renderer, &tileRect);
 
-            SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255);
-            SDL_RenderRect(renderer, &tileRect);
+            if (DRAW_GRID) {
+                SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255);
+                SDL_RenderRect(renderer, &tileRect);
+            }
         }
     }
 }
