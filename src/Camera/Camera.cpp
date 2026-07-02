@@ -1,28 +1,29 @@
 #include "Camera.h"
 #include "Config.h"
 
-void UpdateCameraButtons(Camera &camera) {
+void UpdateCameraButtons(Camera &camera, float deltaTime) {
 
     const bool *keyboard = SDL_GetKeyboardState(nullptr);
+    const float speed = CAMERA_SPEED * deltaTime;
 
     if (keyboard[SDL_SCANCODE_W]) {
-        camera.y -= CAMERA_SPEED;
+        camera.y -= speed;
     }
 
     if (keyboard[SDL_SCANCODE_S]) {
-        camera.y += CAMERA_SPEED;
+        camera.y += speed;
     }
 
     if (keyboard[SDL_SCANCODE_A]) {
-        camera.x -= CAMERA_SPEED;
+        camera.x -= speed;
     }
 
     if (keyboard[SDL_SCANCODE_D]) {
-        camera.x += CAMERA_SPEED;
+        camera.x += speed;
     }
 }
 
-void UpdateCameraMouse(Camera &camera, SDL_Window *window) {
+void UpdateCameraMouse(Camera &camera, SDL_Window *window, float deltaTime) {
 
     float mouseX;
     float mouseY;
@@ -30,26 +31,28 @@ void UpdateCameraMouse(Camera &camera, SDL_Window *window) {
     SDL_GetMouseState(&mouseX, &mouseY);
     SDL_GetWindowSize(window, &camera.viewportWidth, &camera.viewportHeight);
 
+    const float speed = CAMERA_SPEED * deltaTime;
+
     if (mouseX < CAMERA_EDGE_SIZE) {
-        camera.x -= CAMERA_SPEED;
+        camera.x -= speed;
     }
 
     if (mouseX > camera.viewportWidth - CAMERA_EDGE_SIZE) {
-        camera.x += CAMERA_SPEED;
+        camera.x += speed;
     }
 
     if (mouseY < CAMERA_EDGE_SIZE) {
-        camera.y -= CAMERA_SPEED;
+        camera.y -= speed;
     }
 
     if (mouseY > camera.viewportHeight - CAMERA_EDGE_SIZE) {
-        camera.y += CAMERA_SPEED;
+        camera.y += speed;
     }
 }
 
-void UpdateCamera(Camera &camera, SDL_Window *window) {
-    UpdateCameraButtons(camera);
-    UpdateCameraMouse(camera, window);
+void UpdateCamera(Camera &camera, SDL_Window *window, float deltaTime) {
+    UpdateCameraButtons(camera, deltaTime);
+    UpdateCameraMouse(camera, window, deltaTime);
 }
 
 void ClampCamera(Camera &camera, const Map &map) {
@@ -58,7 +61,8 @@ void ClampCamera(Camera &camera, const Map &map) {
 
     if (worldWidth <= camera.viewportWidth) {
         camera.x = -(camera.viewportWidth - worldWidth) / 2.0f;
-    } else {
+    }
+    else {
         float maxX = worldWidth - camera.viewportWidth;
 
         if (camera.x < 0.0f)
@@ -70,7 +74,8 @@ void ClampCamera(Camera &camera, const Map &map) {
 
     if (worldHeight <= camera.viewportHeight) {
         camera.y = -(camera.viewportHeight - worldHeight) / 2.0f;
-    } else {
+    }
+    else {
         float maxY = worldHeight - camera.viewportHeight;
 
         if (camera.y < 0.0f)

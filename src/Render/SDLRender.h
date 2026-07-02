@@ -2,6 +2,7 @@
 
 #include "Camera.h"
 #include "Config.h"
+#include "EngineTime.h"
 #include "Map.h"
 #include "SDL3/SDL.h"
 #include "SDL3/SDL_render.h"

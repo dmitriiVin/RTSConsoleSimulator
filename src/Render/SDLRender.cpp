@@ -1,4 +1,3 @@
-#include "Camera.h"
 #include "SDLRender.h"
 
 void Render(const Map &map, const std::vector<Unit> &units) {
@@ -9,7 +8,7 @@ void Render(const Map &map, const std::vector<Unit> &units) {
     SDL_DisplayID display = SDL_GetPrimaryDisplay();
     const SDL_DisplayMode *mode = SDL_GetCurrentDisplayMode(display);
 
-    SDL_Window *window = SDL_CreateWindow("Моё окно SDL3", 1280, 720, SDL_WINDOW_RESIZABLE);
+    SDL_Window *window = SDL_CreateWindow("RTS ENGINE", 1280, 720, SDL_WINDOW_RESIZABLE);
 
     if (window == nullptr) {
         SDL_Log("Не удалось создать окно: %s", SDL_GetError());
@@ -30,7 +29,16 @@ void Render(const Map &map, const std::vector<Unit> &units) {
 
     Camera camera{0.0f, 0.0f};
 
+    Time time;
+
     while (running) {
+        time.Update();
+
+        if (time.IsFPSUpdated()) {
+            std::string title = "RTS ENGINE | FPS: " + std::to_string(static_cast<int>(time.GetFPS()));
+            SDL_SetWindowTitle(window, title.c_str());
+        }
+
         SDL_Event event;
 
         while (SDL_PollEvent(&event)) {
@@ -38,9 +46,10 @@ void Render(const Map &map, const std::vector<Unit> &units) {
                 running = false;
             }
         }
+
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 
-        UpdateCamera(camera, window);
+        UpdateCamera(camera, window, time.GetDeltaTime());
         ClampCamera(camera, map);
 
         SDL_RenderClear(renderer);
@@ -78,11 +87,14 @@ void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera) {
 
             if (tile == TILE_GRASS) {
                 SDL_SetRenderDrawColor(renderer, 117, 233, 128, 255);
-            } else if (tile == TILE_TREE) {
+            }
+            else if (tile == TILE_TREE) {
                 SDL_SetRenderDrawColor(renderer, 61, 186, 7, 255);
-            } else if (tile == TILE_WATER) {
+            }
+            else if (tile == TILE_WATER) {
                 SDL_SetRenderDrawColor(renderer, 113, 244, 249, 255);
-            } else if (tile == TILE_MOUNTAIN) {
+            }
+            else if (tile == TILE_MOUNTAIN) {
                 SDL_SetRenderDrawColor(renderer, 155, 150, 150, 255);
             }
 
