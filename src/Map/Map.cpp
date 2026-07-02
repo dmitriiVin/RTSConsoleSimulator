@@ -7,8 +7,8 @@
 
 Map CreateMap() {
     Map map;
-    map.map_width = 500;
-    map.map_height = 250;
+    map.map_width = 100;
+    map.map_height = 100;
 
     int points = map.map_width * map.map_height;
 

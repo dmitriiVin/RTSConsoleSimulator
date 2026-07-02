@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "Config.h"
+#include "Isometric.h"
 
 void UpdateCameraButtons(Camera &camera, float deltaTime) {
 
@@ -56,8 +57,9 @@ void UpdateCamera(Camera &camera, SDL_Window *window, float deltaTime) {
 }
 
 void ClampCamera(Camera &camera, const Map &map) {
-    float worldWidth = map.map_width * TILE_SIZE;
-    float worldHeight = map.map_height * TILE_SIZE;
+
+    float worldWidth = GetMapPixelWidth(map.map_width, map.map_height);
+    float worldHeight = GetMapPixelHeight(map.map_width, map.map_height);
 
     if (worldWidth <= camera.viewportWidth) {
         camera.x = -(camera.viewportWidth - worldWidth) / 2.0f;

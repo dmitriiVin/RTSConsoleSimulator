@@ -11,7 +11,7 @@ add_executable(${PROJECT_NAME}
     src/Map/Map.cpp
     src/Map/MapGenerator.cpp
     src/Render/SDLRender.cpp
-    src/Math/WorldMath.cpp
+    src/Math/Isometric.cpp
     src/Camera/Camera.cpp
     src/Engine/Time/EngineTime.cpp
 )
