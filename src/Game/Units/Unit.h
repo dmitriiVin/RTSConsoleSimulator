@@ -1,0 +1,27 @@
+//=================================================================================
+//|                                                                               |
+//|  RTSEngine                                                                    |
+//|  Игровой юнит                                                                 |
+//|  Базовая сущность с параметрами,                                              |
+//|  позицией и операциями для боя.                                               |
+//|                                                                               |
+//=================================================================================
+#pragma once
+
+#include <string>
+#include <vector>
+
+struct Unit {
+    std::string name;
+    int hp;
+    int damage;
+    std::string designation;
+
+    int x;
+    int y;
+};
+
+Unit CreateUnit();
+void PrintUnit(const Unit &unit);
+void PrintUnitsList(const std::vector<Unit> &units);
+void AttackUnit(std::vector<Unit> &units, int attackerIndex, int targetIndex);

@@ -7,3 +7,7 @@ build/
 # Compilation database
 compile_commands.json
 
+.DS_Store
+**/.DS_Store
+
+.fake

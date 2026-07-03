@@ -1,7 +1,12 @@
-#include "Isometric.h"
-
-#include "Camera.h"
-#include "Config.h"
+//=================================================================================
+//|                                                                               |
+//|  RTSEngine                                                                    |
+//|  Формулы изометрии                                                            |
+//|  Пересчитывает клетки карты в ромбы                                           |
+//|  и оценивает размеры мира в пикселях.                                         |
+//|                                                                               |
+//=================================================================================
+#include "Engine/Math/Isometric.h"
 
 ScreenPoint WorldToScreen(int column, int row, const Camera &camera) {
     ScreenPoint point;

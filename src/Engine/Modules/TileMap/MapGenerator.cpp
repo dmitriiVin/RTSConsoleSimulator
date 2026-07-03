@@ -1,5 +1,12 @@
-#include "Config.h"
-#include "MapGenerator.h"
+//=================================================================================
+//|                                                                               |
+//|  RTSEngine                                                                    |
+//|  Процедурная генерация                                                        |
+//|  Заполняет карту лесом, водой и горами,                                       |
+//|  создавая простой игровой ландшафт.                                           |
+//|                                                                               |
+//=================================================================================
+#include "Engine/Modules/TileMap/MapGenerator.h"
 #include <random>
 
 void CreateForest(Map &map, int x, int y, int width, int height) {

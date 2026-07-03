@@ -1,3 +1,11 @@
+#=================================================================================
+#|                                                                               |
+#|  RTSEngine                                                                    |
+#|  Корневая сборка проекта                                                      |
+#|  Здесь подключаются исполняемый файл                                          |
+#|  и все модули движка и игры.                                                  |
+#|                                                                               |
+#=================================================================================
 cmake_minimum_required(VERSION 3.10)
 
 project(RTSEngine)
@@ -7,26 +15,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    src/Units/Unit.cpp
-    src/Map/Map.cpp
-    src/Map/MapGenerator.cpp
-    src/Render/SDLRender.cpp
-    src/Math/Isometric.cpp
-    src/Camera/Camera.cpp
-    src/Engine/Time/EngineTime.cpp
+
+    src/Engine/Core/Time/EngineTime.cpp
+
+    src/Engine/Modules/TileMap/Map.cpp
+    src/Engine/Modules/TileMap/MapGenerator.cpp
+    src/Engine/Render/SDLRender.cpp
+    src/Engine/Math/Isometric.cpp
+    src/Engine/Camera/Camera.cpp
+
+    src/Game/Units/Unit.cpp
 )
 
-target_include_directories(${PROJECT_NAME}
-    PRIVATE
-        src
-        src/Config
-        src/Units
-        src/Map
-        src/Render
-        src/Math
-        src/Camera
-        src/Engine/Time
-)
+target_include_directories(${PROJECT_NAME} PRIVATE src)
 
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)
