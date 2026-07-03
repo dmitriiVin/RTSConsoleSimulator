@@ -36,7 +36,6 @@ void UpdateCameraMouse(Camera &camera, SDL_Window *window, float deltaTime) {
     float mouseY;
 
     SDL_GetMouseState(&mouseX, &mouseY);
-    SDL_GetWindowSize(window, &camera.viewportWidth, &camera.viewportHeight);
 
     const float speed = CAMERA_SPEED * deltaTime;
 
@@ -58,38 +57,31 @@ void UpdateCameraMouse(Camera &camera, SDL_Window *window, float deltaTime) {
 }
 
 void UpdateCamera(Camera &camera, SDL_Window *window, float deltaTime) {
+    UpdateViewport(camera, window);
     UpdateCameraButtons(camera, deltaTime);
     UpdateCameraMouse(camera, window, deltaTime);
 }
 
+void UpdateViewport(Camera &camera, SDL_Window *window) {
+    SDL_GetWindowSize(window, &camera.viewportWidth, &camera.viewportHeight);
+}
+
 void ClampCamera(Camera &camera, const Map &map) {
+    MapBounds bounds = GetMapBounds(map, camera);
 
-    float worldWidth = GetMapPixelWidth(map.map_width, map.map_height);
-    float worldHeight = GetMapPixelHeight(map.map_width, map.map_height);
-
-    if (worldWidth <= camera.viewportWidth) {
-        camera.x = -(camera.viewportWidth - worldWidth) / 2.0f;
-    }
-    else {
-        float maxX = worldWidth - camera.viewportWidth;
-
-        if (camera.x < 0.0f)
-            camera.x = 0.0f;
-
-        if (camera.x > maxX)
-            camera.x = maxX;
+    if (bounds.left > 0.0f) {
+        camera.x -= bounds.left;
     }
 
-    if (worldHeight <= camera.viewportHeight) {
-        camera.y = -(camera.viewportHeight - worldHeight) / 2.0f;
+    if (bounds.right < camera.viewportWidth) {
+        camera.x += camera.viewportWidth - bounds.right;
     }
-    else {
-        float maxY = worldHeight - camera.viewportHeight;
 
-        if (camera.y < 0.0f)
-            camera.y = 0.0f;
+    if (bounds.top > 0.0f) {
+        camera.y -= bounds.top;
+    }
 
-        if (camera.y > maxY)
-            camera.y = maxY;
+    if (bounds.bottom < camera.viewportHeight) {
+        camera.y += camera.viewportHeight - bounds.bottom;
     }
 }

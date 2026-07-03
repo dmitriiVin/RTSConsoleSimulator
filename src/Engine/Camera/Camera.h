@@ -24,3 +24,4 @@ struct Camera {
 
 void UpdateCamera(Camera &camera, SDL_Window *window, float deltaTime);
 void ClampCamera(Camera &camera, const Map &map);
+void UpdateViewport(Camera &camera, SDL_Window *window);

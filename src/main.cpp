@@ -6,6 +6,8 @@
 //|  юнитов и передаёт управление в рендер.                                       |
 //|                                                                               |
 //=================================================================================
+#include "Engine/Camera/Camera.h"
+#include "Engine/Math/Isometric.h"
 #include "Engine/Modules/TileMap/Map.h"
 #include "Engine/Render/SDLRender.h"
 
@@ -19,4 +21,5 @@ int main() {
     Map world = CreateMap();
 
     Render(world, units);
+
 }

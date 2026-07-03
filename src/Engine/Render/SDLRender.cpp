@@ -6,7 +6,10 @@
 //|  запускает цикл и выводит карту на экран.                                     |
 //|                                                                               |
 //=================================================================================
+#include "Engine/Math/Isometric.h"
 #include "Engine/Render/SDLRender.h"
+#include "Engine/Render/ViewCulling.h"
+#include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>
 
 void Render(const Map &map, const std::vector<Unit> &units) {
@@ -59,10 +62,11 @@ void Render(const Map &map, const std::vector<Unit> &units) {
         SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
 
         UpdateCamera(camera, window, time.GetDeltaTime());
+        VisibleArea visibleArea = CalculateVisibleArea(camera, map);
         // ClampCamera(camera, map);
 
         SDL_RenderClear(renderer);
-        RenderMap(renderer, map, camera);
+        RenderMap(renderer, map, camera, visibleArea);
         SDL_RenderPresent(renderer);
     }
 
@@ -110,33 +114,38 @@ void DrawIsometricTile(SDL_Renderer *renderer, float x, float y, SDL_FColor colo
     }
 }
 
-void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera) {
+SDL_FColor GetTileColor(char tile) {
+    SDL_FColor color;
 
-    for (int row = 0; row < map.map_height; row++) {
-        for (int column = 0; column < map.map_width; column++) {
+    if (tile == TILE_GRASS) {
+        color = {255.0f / 255.0f, 153.0f / 255.0f, 204.0f / 255.0f, 1.0f};
+    }
+    else if (tile == TILE_TREE) {
+        color = {61.0f / 255.0f, 186.0f / 255.0f, 7.0f / 255.0f, 1.0f};
+    }
+    else if (tile == TILE_WATER) {
+        color = {113.0f / 255.0f, 244.0f / 255.0f, 249.0f / 255.0f, 1.0f};
+    }
+    else if (tile == TILE_MOUNTAIN) {
+        color = {155.0f / 255.0f, 150.0f / 255.0f, 150.0f / 255.0f, 1.0f};
+    }
+    else {
+        color = {1.0f, 1.0f, 1.0f, 1.0f};
+    }
 
+    return color;
+}
+
+void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera, const VisibleArea &visibleArea) {
+
+    for (int row = visibleArea.firstRow; row <= visibleArea.lastRow; row++) {
+        for (int column = visibleArea.firstColumn; column <= visibleArea.lastColumn; column++) {
             ScreenPoint pos = WorldToScreen(column, row, camera);
 
             int index = map.map_width * row + column;
             char tile = map.cells_map[index];
 
-            SDL_FColor color;
-
-            if (tile == TILE_GRASS) {
-                color = {117.0f / 255.0f, 233.0f / 255.0f, 128.0f / 255.0f, 1.0f};
-            }
-            else if (tile == TILE_TREE) {
-                color = {61.0f / 255.0f, 186.0f / 255.0f, 7.0f / 255.0f, 1.0f};
-            }
-            else if (tile == TILE_WATER) {
-                color = {113.0f / 255.0f, 244.0f / 255.0f, 249.0f / 255.0f, 1.0f};
-            }
-            else if (tile == TILE_MOUNTAIN) {
-                color = {155.0f / 255.0f, 150.0f / 255.0f, 150.0f / 255.0f, 1.0f};
-            }
-            else {
-                color = {1.0f, 1.0f, 1.0f, 1.0f};
-            }
+            SDL_FColor color = GetTileColor(tile);
 
             DrawIsometricTile(renderer, pos.x, pos.y, color);
         }

@@ -15,14 +15,9 @@ enum class GroundType {
     Mountain
 };
 
-enum class ObjectType {
-    None,
-    Tree,
-    Stone,
-    Bush
-};
+struct MapObject;
 
 struct Tile {
     GroundType ground = GroundType::Grass;
-    ObjectType object = ObjectType::None;
+    MapObject *object = nullptr;
 };
