@@ -17,5 +17,7 @@ struct MapObject {
     int maxResources = 0;
     int resourcesLeft = 0;
 
+    int variation;
+
     bool blocksMovement = true;
 };

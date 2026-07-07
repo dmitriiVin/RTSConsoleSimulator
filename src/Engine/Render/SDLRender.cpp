@@ -10,9 +10,11 @@
 #include "Engine/Modules/TileMap/MapObject.h"
 #include "Engine/Modules/TileMap/Tile.h"
 #include "Engine/Render/SDLRender.h"
+#include "Engine/Render/Texture.h"
 #include "Engine/Render/ViewCulling.h"
 #include "SDL3_image/SDL_image.h"
 #include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_rect.h>
 #include <SDL3/SDL_render.h>
 
 void Render(const Map &map, const std::vector<Unit> &units) {
@@ -101,6 +103,25 @@ void DrawTexture(SDL_Renderer *renderer, const Texture &texture, float x, float 
     SDL_RenderTexture(renderer, texture.texture, nullptr, &dst);
 }
 
+void DrawSprite(SDL_Renderer *renderer, const Texture &texture, int spriteX, int spriteY, int spriteWidth, int spriteHeight, float x, float y) {
+    SDL_FRect src;
+
+    src.x = spriteX;
+    src.y = spriteY;
+    src.w = spriteWidth;
+    src.h = spriteHeight;
+
+    SDL_FRect dst;
+
+    dst.x = x - spriteWidth / 2.0f;
+    dst.y = y;
+
+    dst.w = spriteWidth;
+    dst.h = spriteHeight;
+
+    SDL_RenderTexture(renderer, texture.texture, &src, &dst);
+}
+
 const Texture &GetGroundTexture(GroundType ground, const TextureManager &textures) {
     switch (ground) {
     case GroundType::Grass:
@@ -117,7 +138,7 @@ const Texture &GetGroundTexture(GroundType ground, const TextureManager &texture
     }
 }
 
-void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera, const VisibleArea &visibleArea, const TextureManager &textures) {
+void RenderGround(SDL_Renderer *renderer, const Map &map, const Camera &camera, const VisibleArea &visibleArea, const TextureManager &textures) {
     for (int row = visibleArea.firstRow; row <= visibleArea.lastRow; row++) {
         for (int column = visibleArea.firstColumn; column <= visibleArea.lastColumn; column++) {
             ScreenPoint pos = WorldToScreen(column, row, camera);
@@ -131,4 +152,30 @@ void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera, con
             DrawTexture(renderer, texture, pos.x, pos.y);
         }
     }
+}
+
+void RenderObjects(SDL_Renderer *renderer, const Map &map, const Camera &camera, const VisibleArea &visibleArea, const TextureManager &textures) {
+    for (int row = visibleArea.firstRow; row <= visibleArea.lastRow; row++) {
+        for (int column = visibleArea.firstColumn; column <= visibleArea.lastColumn; column++) {
+
+            ScreenPoint pos = WorldToScreen(column, row, camera);
+
+            int index = map.map_width * row + column;
+
+            MapObject *object = map.tiles[index].object;
+
+            if (object == nullptr) {
+                continue;
+            }
+
+            if (object->type == MapObjectType::Tree) {
+                DrawSprite(renderer, textures.tree, 256, 0, 128, 128, pos.x, pos.y);
+            }
+        }
+    }
+}
+
+void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera, const VisibleArea &visibleArea, const TextureManager &textures) {
+    RenderGround(renderer, map, camera, visibleArea, textures);
+    RenderObjects(renderer, map, camera, visibleArea, textures);
 }

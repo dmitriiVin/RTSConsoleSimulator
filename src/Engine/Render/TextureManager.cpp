@@ -32,6 +32,9 @@ bool LoadTextures(SDL_Renderer *renderer, TextureManager &textures) {
     if (!LoadTexture(renderer, textures.water, "/Users/dmitriivinogradov/RTSEngine/src/Game/Assets/Textures/Tiles/ts_shallow0/straight/45/0.png"))
         return false;
 
+    if (!LoadTexture(renderer, textures.tree, "/Users/dmitriivinogradov/RTSEngine/src/Game/Assets/Textures/Objects/tree_sheet.png"))
+        return false;
+
     return true;
 }
 
