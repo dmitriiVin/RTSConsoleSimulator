@@ -7,8 +7,11 @@
 //|                                                                               |
 //=================================================================================
 #include "Engine/Math/Isometric.h"
+#include "Engine/Modules/TileMap/MapObject.h"
+#include "Engine/Modules/TileMap/Tile.h"
 #include "Engine/Render/SDLRender.h"
 #include "Engine/Render/ViewCulling.h"
+#include "SDL3_image/SDL_image.h"
 #include <SDL3/SDL_pixels.h>
 #include <SDL3/SDL_render.h>
 
@@ -17,6 +20,7 @@ void Render(const Map &map, const std::vector<Unit> &units) {
         SDL_Log("Ошибка инициализации SDL: %s", SDL_GetError());
         return;
     }
+
     SDL_DisplayID display = SDL_GetPrimaryDisplay();
     const SDL_DisplayMode *mode = SDL_GetCurrentDisplayMode(display);
 
@@ -43,6 +47,15 @@ void Render(const Map &map, const std::vector<Unit> &units) {
 
     Time time;
 
+    TextureManager textures;
+
+    if (!LoadTextures(renderer, textures)) {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return;
+    }
+
     while (running) {
         time.Update();
 
@@ -66,88 +79,56 @@ void Render(const Map &map, const std::vector<Unit> &units) {
         // ClampCamera(camera, map);
 
         SDL_RenderClear(renderer);
-        RenderMap(renderer, map, camera, visibleArea);
+        RenderMap(renderer, map, camera, visibleArea, textures);
         SDL_RenderPresent(renderer);
     }
 
+    DestroyTextures(textures);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-void DrawIsometricTile(SDL_Renderer *renderer, float x, float y, SDL_FColor color) {
-    SDL_Vertex vertices[4];
+void DrawTexture(SDL_Renderer *renderer, const Texture &texture, float x, float y) {
+    SDL_FRect dst;
 
-    // Верхняя вершина
-    vertices[0].position = {x, y};
-    vertices[0].color = color;
-    vertices[0].tex_coord = {0.0f, 0.0f};
+    dst.x = x - texture.width / 2.0f;
+    dst.y = y;
 
-    // Правая вершина
-    vertices[1].position = {x + HALF_TILE_WIDTH, y + HALF_TILE_HEIGHT};
-    vertices[1].color = color;
-    vertices[1].tex_coord = {0.0f, 0.0f};
+    dst.w = texture.width;
+    dst.h = texture.height;
 
-    // Нижняя вершина
-    vertices[2].position = {x, y + TILE_HEIGHT};
-    vertices[2].color = color;
-    vertices[2].tex_coord = {0.0f, 0.0f};
+    SDL_RenderTexture(renderer, texture.texture, nullptr, &dst);
+}
 
-    // Левая вершина
-    vertices[3].position = {x - HALF_TILE_WIDTH, y + HALF_TILE_HEIGHT};
-    vertices[3].color = color;
-    vertices[3].tex_coord = {0.0f, 0.0f};
+const Texture &GetGroundTexture(GroundType ground, const TextureManager &textures) {
+    switch (ground) {
+    case GroundType::Grass:
+        return textures.grass;
 
-    const int indices[] = {
-        0, 1, 3, // первый треугольник
-        3, 1, 2  // второй треугольник
-    };
+    case GroundType::Water:
+        return textures.water;
 
-    SDL_RenderGeometry(renderer, nullptr, vertices, 4, indices, 6);
+    case GroundType::Mountain:
+        return textures.mountain;
 
-    // Если нужна сетка поверх ромба
-    if (DRAW_GRID) {
-        SDL_FPoint outline[5] = {{x, y}, {x + HALF_TILE_WIDTH, y + HALF_TILE_HEIGHT}, {x, y + TILE_HEIGHT}, {x - HALF_TILE_WIDTH, y + HALF_TILE_HEIGHT}, {x, y}};
-
-        SDL_SetRenderDrawColor(renderer, 60, 60, 60, 255);
-        SDL_RenderLines(renderer, outline, 5);
+    default:
+        return textures.grass;
     }
 }
 
-SDL_FColor GetTileColor(char tile) {
-    SDL_FColor color;
-
-    if (tile == TILE_GRASS) {
-        color = {255.0f / 255.0f, 153.0f / 255.0f, 204.0f / 255.0f, 1.0f};
-    }
-    else if (tile == TILE_TREE) {
-        color = {61.0f / 255.0f, 186.0f / 255.0f, 7.0f / 255.0f, 1.0f};
-    }
-    else if (tile == TILE_WATER) {
-        color = {113.0f / 255.0f, 244.0f / 255.0f, 249.0f / 255.0f, 1.0f};
-    }
-    else if (tile == TILE_MOUNTAIN) {
-        color = {155.0f / 255.0f, 150.0f / 255.0f, 150.0f / 255.0f, 1.0f};
-    }
-    else {
-        color = {1.0f, 1.0f, 1.0f, 1.0f};
-    }
-
-    return color;
-}
-
-void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera, const VisibleArea &visibleArea) {
-
+void RenderMap(SDL_Renderer *renderer, const Map &map, const Camera &camera, const VisibleArea &visibleArea, const TextureManager &textures) {
     for (int row = visibleArea.firstRow; row <= visibleArea.lastRow; row++) {
         for (int column = visibleArea.firstColumn; column <= visibleArea.lastColumn; column++) {
             ScreenPoint pos = WorldToScreen(column, row, camera);
 
             int index = map.map_width * row + column;
-            char tile = map.cells_map[index];
 
-            SDL_FColor color = GetTileColor(tile);
+            GroundType ground = map.tiles[index].ground;
 
-            DrawIsometricTile(renderer, pos.x, pos.y, color);
+            const Texture &texture = GetGroundTexture(ground, textures);
+
+            DrawTexture(renderer, texture, pos.x, pos.y);
         }
     }
 }

@@ -21,6 +21,8 @@ add_executable(${PROJECT_NAME}
     src/Engine/Modules/TileMap/Map.cpp
     src/Engine/Modules/TileMap/MapGenerator.cpp
     src/Engine/Render/SDLRender.cpp
+    src/Engine/Render/Texture.cpp
+    src/Engine/Render/TextureManager.cpp
     src/Engine/Render/ViewCulling.cpp
     src/Engine/Math/Isometric.cpp
     src/Engine/Camera/Camera.cpp

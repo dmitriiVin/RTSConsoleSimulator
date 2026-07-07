@@ -14,12 +14,12 @@
 
 Map CreateMap() {
     Map map;
-    map.map_width = 100;
-    map.map_height = 100;
+    map.map_width = 500;
+    map.map_height = 500;
 
     int points = map.map_width * map.map_height;
 
-    map.cells_map = std::vector<char>(points, '.');
+    map.tiles.resize(points);
 
     GenerateMap(map);
 

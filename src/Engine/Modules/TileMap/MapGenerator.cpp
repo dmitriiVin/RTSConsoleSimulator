@@ -7,6 +7,7 @@
 //|                                                                               |
 //=================================================================================
 #include "Engine/Modules/TileMap/MapGenerator.h"
+#include "Engine/Modules/TileMap/MapObject.h"
 #include <random>
 
 void CreateForest(Map &map, int x, int y, int width, int height) {
@@ -38,14 +39,20 @@ void CreateForest(Map &map, int x, int y, int width, int height) {
 
             if (isEdge) {
                 if (random_num < TREE_EDGE_MISSING_PROBABILITY) {
-                    map.cells_map[index] = TILE_GRASS;
+                    map.tiles[index].ground = GroundType::Grass;
+
+                    map.tiles[index].object = nullptr;
                 }
                 else {
-                    map.cells_map[index] = TILE_TREE;
+                    map.tiles[index].ground = GroundType::Grass;
+                    map.tiles[index].object = new MapObject;
+                    map.tiles[index].object->type = MapObjectType::Tree;
                 }
             }
             else {
-                map.cells_map[index] = TILE_TREE;
+                map.tiles[index].ground = GroundType::Grass;
+                map.tiles[index].object = new MapObject;
+                map.tiles[index].object->type = MapObjectType::Tree;
             }
         }
     }
@@ -56,7 +63,8 @@ void CreateLake(Map &map, int x, int y, int width, int height) {
     for (row = y; row < y + height; row++) {
         for (column = x; column < x + width; column++) {
             int index = row * map.map_width + column;
-            map.cells_map[index] = '~';
+            map.tiles[index].ground = GroundType::Water;
+            map.tiles[index].object = nullptr;
         }
     }
 }
@@ -66,7 +74,8 @@ void CreateMountains(Map &map, int x, int y, int width, int height) {
     for (row = y; row < y + height; row++) {
         for (column = x; column < x + width; column++) {
             int index = row * map.map_width + column;
-            map.cells_map[index] = '^';
+            map.tiles[index].ground = GroundType::Mountain;
+            map.tiles[index].object = nullptr;
         }
     }
 }
