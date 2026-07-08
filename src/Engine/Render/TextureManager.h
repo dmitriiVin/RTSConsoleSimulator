@@ -7,6 +7,7 @@ struct TextureManager {
     Texture water;
     Texture mountain;
     Texture tree;
+    Texture forge;
 };
 
 bool LoadTexture(SDL_Renderer *renderer, Texture &texture, const char *path);

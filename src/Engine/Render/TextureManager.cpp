@@ -35,6 +35,12 @@ bool LoadTextures(SDL_Renderer *renderer, TextureManager &textures) {
     if (!LoadTexture(renderer, textures.tree, "/Users/dmitriivinogradov/RTSEngine/src/Game/Assets/Textures/Objects/tree_sheet.png"))
         return false;
 
+    if (!LoadTexture(renderer, textures.mountain, "/Users/dmitriivinogradov/RTSEngine/src/Game/Assets/Textures/Objects/rocks_CC0.png"))
+        return false;
+
+    if (!LoadTexture(renderer, textures.forge, "/Users/dmitriivinogradov/RTSEngine/src/Game/Assets/Textures/Objects/Buildings/Forge/Forge.png"))
+        return false;
+
     return true;
 }
 

@@ -168,8 +168,25 @@ void RenderObjects(SDL_Renderer *renderer, const Map &map, const Camera &camera,
                 continue;
             }
 
-            if (object->type == MapObjectType::Tree) {
+            if (object->worldX != column || object->worldY != row) {
+                continue;
+            }
+
+            switch (object->type) {
+            case MapObjectType::Tree:
                 DrawSprite(renderer, textures.tree, 256, 0, 128, 128, pos.x, pos.y);
+                break;
+
+            case MapObjectType::Stone:
+                DrawSprite(renderer, textures.mountain, 64, 0, 32, 32, pos.x, pos.y);
+                break;
+
+            case MapObjectType::Forge:
+                DrawSprite(renderer, textures.forge, 0, 0, 384, 341, pos.x, pos.y);
+                break;
+
+            default:
+                break;
             }
         }
     }

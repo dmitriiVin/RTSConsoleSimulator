@@ -5,11 +5,19 @@ enum class MapObjectType {
     GoldMine,
     Crystal,
     Stone,
-    Bush
+    Bush,
+    Rock,
+    Forge
 };
 
 struct MapObject {
     MapObjectType type;
+
+    int worldX;
+    int worldY;
+
+    int tileWidth = 1;
+    int tileHeight = 1;
 
     int maxHealth = 100;
     int health = 100;
